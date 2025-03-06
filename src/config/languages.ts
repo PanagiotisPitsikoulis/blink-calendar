@@ -26,6 +26,7 @@ export interface LanguageStrings {
   incompleteInformationDescription: string;
   copyLink: string;
   linkCopied: string;
+  downloadCalendar: string;
 }
 
 export const languages: Record<Language, LanguageStrings> = {
@@ -56,6 +57,7 @@ export const languages: Record<Language, LanguageStrings> = {
       "Please complete the appointment form to generate calendar links and QR codes.",
     copyLink: "Copy Link",
     linkCopied: "Link Copied",
+    downloadCalendar: "Download Calendar File",
   },
   el: {
     admin: "Διαχειριστής",
@@ -84,6 +86,7 @@ export const languages: Record<Language, LanguageStrings> = {
       "Παρακαλώ συμπληρώστε τη φόρμα ραντεβού για να δημιουργηθούν οι σύνδεσμοι ημερολογίου και οι κωδικοί QR.",
     copyLink: "Αντιγραφή Συνδέσμου",
     linkCopied: "Ο Σύνδεσμος Αντιγράφηκε",
+    downloadCalendar: "Λήψη Αρχείου Ημερολογίου",
   },
 };
 

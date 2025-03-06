@@ -21,6 +21,9 @@ import {
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import { createCalendarUrls } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeSwitch";
+import { Button } from "@/components/ui/button";
+import { MailWarningIcon } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   const [date, setDate] = useState<Date | undefined>(undefined);
@@ -109,6 +112,11 @@ export default function Home() {
       </Tabs>
 
       <div className='mt-8 flex justify-center flex-row gap-4'>
+        <Button variant={"outline"} size={"icon"} asChild>
+          <Link href='https://www.panagiotispitsikoulis.gr/'>
+            <MailWarningIcon />
+          </Link>
+        </Button>
         <Select
           value={language}
           onValueChange={(value: Language) => {

@@ -16,6 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Blink Tattoo Calendar",
   description: "Blink Tattoo Calendar - Appointment Scheduler",
+  openGraph: {
+    images: [
+      {
+        url: "/og.avif",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

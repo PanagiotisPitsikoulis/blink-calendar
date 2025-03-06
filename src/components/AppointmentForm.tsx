@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import Link from "next/link";
 
 interface AppointmentFormProps {
   strings: LanguageStrings;
@@ -38,18 +39,20 @@ export function AppointmentForm({
   return (
     <Card>
       <CardHeader className='grid grid-cols-3'>
-        <div className='col-span-2'>
+        <div className='col-span-2 flex flex-col gap-2'>
           <CardTitle>{strings.appointmentSchedule}</CardTitle>
           <CardDescription>{strings.selectDateTime}</CardDescription>
         </div>
         <div className='w-full flex items-center justify-end'>
-          <Image
-            src='/blink.avif'
-            className='shrink-0'
-            alt='Blink Tattoo Studio Logo'
-            width={60}
-            height={60}
-          />
+          <Link href='https://www.blinktattoo.gr/'>
+            <Image
+              src='/blink.avif'
+              className='shrink-0'
+              alt='Blink Tattoo Studio Logo'
+              width={60}
+              height={60}
+            />
+          </Link>
         </div>
       </CardHeader>
       <CardContent className='space-y-6'>

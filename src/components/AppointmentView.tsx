@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Copy, Check, AlertCircle, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 interface AppointmentViewProps {
   strings: LanguageStrings;
@@ -46,20 +47,29 @@ export function AppointmentView({
   const [copiedApple, setCopiedApple] = useState(false);
 
   const handleCopy = async (text: string, isGoogle: boolean) => {
+    console.log("Copying to clipboard:", isGoogle ? "Google URL" : "Apple URL");
     await navigator.clipboard.writeText(text);
     if (isGoogle) {
+      console.log("Setting Google copied state");
       setCopiedGoogle(true);
-      setTimeout(() => setCopiedGoogle(false), 2000);
+      setTimeout(() => {
+        console.log("Resetting Google copied state");
+        setCopiedGoogle(false);
+      }, 2000);
     } else {
+      console.log("Setting Apple copied state");
       setCopiedApple(true);
-      setTimeout(() => setCopiedApple(false), 2000);
+      setTimeout(() => {
+        console.log("Resetting Apple copied state");
+        setCopiedApple(false);
+      }, 2000);
     }
   };
 
   return (
     <Card>
       <CardHeader className='grid grid-cols-3'>
-        <div className='col-span-2'>
+        <div className='col-span-2 flex flex-col gap-2'>
           <CardTitle>{eventTitle}</CardTitle>
           <CardDescription>
             {eventDescription}
@@ -85,13 +95,15 @@ export function AppointmentView({
           )}
         </div>
         <div className='w-full flex items-center justify-end'>
-          <Image
-            src='/blink.avif'
-            className='shrink-0'
-            alt='Blink Tattoo Studio Logo'
-            width={60}
-            height={60}
-          />
+          <Link href='https://www.blinktattoo.gr/'>
+            <Image
+              src='/blink.avif'
+              className='shrink-0'
+              alt='Blink Tattoo Studio Logo'
+              width={60}
+              height={60}
+            />
+          </Link>
         </div>
       </CardHeader>
       <CardContent className='border-b pb-6'>
@@ -135,17 +147,17 @@ export function AppointmentView({
 
             <div className='flex flex-col items-center gap-4'>
               <Badge>Apple Calendar</Badge>
-              <QRCodeSVG value={calendarUrls.apple} size={300} />
+              <QRCodeSVG value={calendarUrls.icsContent} size={300} />
               <div className='flex w-full max-w-sm items-center space-x-2'>
                 <Input
-                  value={calendarUrls.apple}
+                  value={calendarUrls.icsContent}
                   readOnly
                   className='text-xs'
                 />
                 <Button
                   size='icon'
                   variant='outline'
-                  onClick={() => handleCopy(calendarUrls.apple, false)}
+                  onClick={() => handleCopy(calendarUrls.icsContent, false)}
                   title={copiedApple ? strings.linkCopied : strings.copyLink}
                 >
                   {copiedApple ? (
