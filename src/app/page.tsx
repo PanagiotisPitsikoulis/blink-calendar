@@ -1,101 +1,136 @@
-import Image from "next/image";
+"use client";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useMemo, useRef } from "react";
+import { AppointmentForm } from "@/components/AppointmentForm";
+import { AppointmentView } from "@/components/AppointmentView";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Language,
+  languages,
+  defaultAppointmentTitles,
+  defaultAppointmentDescriptions,
+  studioLocations,
+} from "@/config/languages";
+import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { createCalendarUrls } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeSwitch";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [time, setTime] = useState("");
+  const [language, setLanguage] = useState<Language>("en");
+  const [eventTitle, setEventTitle] = useState(
+    defaultAppointmentTitles[language]
+  );
+  const [eventDescription, setEventDescription] = useState(
+    defaultAppointmentDescriptions[language]
+  );
+  const [activeTab, setActiveTab] = useState("admin");
+  const tabsRef = useRef<HTMLDivElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+  const strings = languages[language];
+  const studioLocation = studioLocations[language];
+
+  const calendarUrls = useMemo((): {
+    google: string;
+    apple: string;
+    icsContent: string;
+  } => {
+    if (!date || !time) return { google: "", apple: "", icsContent: "" };
+
+    return createCalendarUrls(
+      date,
+      time,
+      eventTitle,
+      eventDescription,
+      studioLocation
+    );
+  }, [date, time, eventTitle, eventDescription, studioLocation]);
+
+  const isFormComplete = date && time && eventTitle && eventDescription;
+
+  const handleViewAppointment = () => {
+    setActiveTab("user");
+    tabsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleBackToAdmin = () => {
+    setActiveTab("admin");
+    tabsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div className='container mx-auto p-4 py-8 md:py-20'>
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className='w-full max-w-4xl mx-auto'
+        ref={tabsRef}
+      >
+        <TabsList className='grid w-full grid-cols-2'>
+          <TabsTrigger value='admin'>{strings.admin}</TabsTrigger>
+          <TabsTrigger value='user'>{strings.user}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value='admin'>
+          <AppointmentForm
+            strings={strings}
+            eventTitle={eventTitle}
+            eventDescription={eventDescription}
+            date={date}
+            time={time}
+            onTitleChange={setEventTitle}
+            onDescriptionChange={setEventDescription}
+            onDateChange={setDate}
+            onTimeChange={setTime}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+        </TabsContent>
+
+        <TabsContent value='user'>
+          <AppointmentView
+            strings={strings}
+            eventTitle={eventTitle}
+            eventDescription={eventDescription}
+            studioLocation={studioLocation}
+            date={date}
+            time={time}
+            calendarUrls={calendarUrls}
+            language={language}
+            onBackToAdmin={handleBackToAdmin}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </TabsContent>
+      </Tabs>
+
+      <div className='mt-8 flex justify-center flex-row gap-4'>
+        <Select
+          value={language}
+          onValueChange={(value: Language) => {
+            setLanguage(value);
+            setEventTitle(defaultAppointmentTitles[value]);
+            setEventDescription(defaultAppointmentDescriptions[value]);
+          }}
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder={strings.selectLanguage} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='en'>English</SelectItem>
+            <SelectItem value='el'>Ελληνικά</SelectItem>
+          </SelectContent>
+        </Select>
+        <ThemeToggle />
+      </div>
+
+      {isFormComplete && activeTab === "admin" && (
+        <FloatingActionButton onClick={handleViewAppointment} />
+      )}
     </div>
   );
 }
